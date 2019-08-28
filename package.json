@@ -1,0 +1,19 @@
+{
+  "name": "@replr/monorepo",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lerna run --concurrency 1 precommit",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "devDependencies": {
+    "lerna": "^3.16.4"
+  }
+}
