@@ -1,0 +1,51 @@
+# Context is project root
+FROM node:10-alpine as dev
+
+ARG TZ="Etc/GMT"
+
+ENV TZ ${TZ}
+
+WORKDIR /app
+
+# We need some packages in development
+RUN apk add --update util-linux git python make bash g++ tzdata
+
+# only copy files regarding dependencies
+COPY yarn.lock package.json ./
+COPY packages/tools/package.json ./packages/tools/
+COPY packages/api/package.json ./packages/api/
+COPY packages/ui/package.json ./packages/ui/
+
+# install only production modules and separate it for later use
+RUN yarn install --production --frozen-lockfile \
+  && cp -r node_modules prod_node_modules/
+
+# install all modules
+RUN yarn install --frozen-lockfile
+
+# starting point for image that builds the api
+FROM node:10-alpine as build
+
+WORKDIR /app
+
+# first copy the node_modules from dev stage
+COPY --from=dev /app /app
+# then add source code on it
+COPY . /app
+
+# only use production modules
+RUN cd /app/packages/api \
+  && yarn build \
+  && cd /app \
+  && rm -rf node_modules \
+  && mv prod_node_modules node_modules
+
+# starting point for production image
+FROM node:10-alpine as prod
+
+WORKDIR /app/packages/api
+
+# get source and all node_modules from dev stage
+COPY --from=build /app /app
+
+CMD ["yarn", "start"]

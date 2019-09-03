@@ -1,0 +1,10 @@
+version: "3.4"
+
+services:
+  api:
+    ports:
+      - 3200:3200
+
+  ui:
+    ports:
+      - 35080:80

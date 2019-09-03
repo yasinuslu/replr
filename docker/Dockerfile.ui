@@ -1,0 +1,34 @@
+# Context is project root
+FROM node:10-alpine as dev
+
+ARG TZ="Etc/GMT"
+
+ENV TZ ${TZ}
+
+WORKDIR /app
+
+# We need some packages in development
+RUN apk add --update util-linux git python make bash g++ tzdata
+
+# copy source
+COPY . /app
+
+# install all modules
+RUN yarn install --frozen-lockfile
+
+# starting point for production image
+FROM node:10-alpine as build
+
+WORKDIR /app/packages/ui
+
+# get source and all node_modules from dev stage
+COPY --from=dev /app /app
+
+# only use production modules
+RUN yarn build
+
+# starting point for production image
+FROM nginx:alpine as prod
+
+# get source and all node_modules from dev stage
+COPY --from=build /app/packages/ui/dist /usr/share/nginx/html

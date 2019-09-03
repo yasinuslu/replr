@@ -6,5 +6,5 @@ const Title = styled.h1`
   font-size: 50px;
 `;
 
-const Page: React.FC<{}> = () => <Title>My page</Title>;
+const Page: React.FC<{}> = () => <Title>Hello World</Title>;
 export default Page;

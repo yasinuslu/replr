@@ -1,0 +1,34 @@
+version: "3.4"
+
+volumes:
+  docker_cert_dir:
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.api
+      target: prod
+    working_dir: /app/packages/api
+    depends_on:
+      - dind
+    volumes:
+      - docker_cert_dir:/certs
+
+  ui:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.ui
+      target: prod
+    working_dir: /app/packages/ui
+    depends_on:
+      - api
+
+  dind:
+    image: docker:dind
+    privileged: true
+    environment:
+      DOCKER_TLS_CERTDIR: /certs
+      DOCKER_TLS_SAN: DNS:dind
+    volumes:
+      - docker_cert_dir:/certs
