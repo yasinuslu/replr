@@ -9,7 +9,7 @@ services:
       - 3200:3000
       - 3201:9229
     volumes:
-      - .:/app:rw,cached
+      - .:/app:cached
 
   ui:
     build:
@@ -18,4 +18,4 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - .:/app:rw,cached
+      - .:/app:cached
