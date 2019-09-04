@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { CodeEditor } from '../components/codeEditor';
-import { CodeResult } from '../components/codeResult';
+import { CodeEditor } from './codeEditor';
+import { CodeResult } from './codeResult';
+
+console.log({ env: process.env.NODE_ENV });
 
 const client = axios.create({
   baseURL: 'http://localhost:3200',
 });
 
-const Page: React.FC<{}> = () => {
+export const App: React.FC<{}> = () => {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState([]);
@@ -45,5 +47,3 @@ const Page: React.FC<{}> = () => {
     </div>
   );
 };
-
-export default Page;
