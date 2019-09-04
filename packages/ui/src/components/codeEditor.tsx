@@ -1,17 +1,22 @@
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor';
 
-export const CodeEditor: React.FC<{ onChange: (s: string) => void }> = ({ onChange }) => {
+export const CodeEditor: React.FC<{
+  onChange: (s: string) => void;
+  value: string;
+  language?: 'javascript';
+}> = ({ value, onChange, language = 'javascript' }) => {
   return (
     <MonacoEditor
       width="100%"
       height="100%"
-      language="javascript"
+      language={language}
       theme="vs-dark"
+      onChange={onChange}
+      value={value}
       options={{
         selectOnLineNumbers: true,
       }}
-      onChange={onChange}
     />
   );
 };
