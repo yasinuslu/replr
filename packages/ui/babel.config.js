@@ -17,12 +17,7 @@ module.exports = {
     '@babel/plugin-proposal-numeric-separator',
     '@babel/proposal-class-properties',
     '@babel/proposal-object-rest-spread',
-    [
-      'styled-components',
-      {
-        ssr: true,
-      },
-    ],
+    'babel-plugin-styled-components',
     'react-hot-loader/babel',
   ],
 };
