@@ -8,7 +8,8 @@
     "build": "lerna run --parallel build",
     "lint": "lerna run lint",
     "dup": "yarn docd up",
-    "docd": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml"
+    "docd": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml",
+    "drun": "yarn docd run --rm --service-ports"
   },
   "workspaces": [
     "packages/*"

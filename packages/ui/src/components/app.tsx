@@ -1,8 +1,10 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import axios from 'axios';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { CodeEditor } from './codeEditor';
 import { CodeResult } from './codeResult';
+import { javaScriptParser } from '../parsers';
+import { ParserResultType } from '../types';
 
 const client = axios.create({
   baseURL: 'http://localhost:3200',
@@ -101,20 +103,34 @@ function reducer(state: StateType, action: ActionType): StateType {
 }
 
 const exampleCode = `
-async function fetchNumbers() {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return Array.from({ length: 10 }).map(() => Math.random());
+const axios = require('axios');
+
+async function fetchTodos() {
+    const { data } = await axios.get('https://jsonplaceholder.typicode.com/todos');
+    return data;
 }
 
 (async () => {
-    const numbers = await fetchNumbers();
-    console.log(JSON.stringify(numbers, null, 2));
+    const todos = await fetchTodos();
+    console.log(JSON.stringify(todos, null, 2));
 })();
 `.trim();
 
 export const App: React.FC<{}> = () => {
   const [code, setCode] = useState(exampleCode);
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [parseInfo, setParseInfo] = useState<ParserResultType>({ tree: null, dependencies: [] });
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const info = javaScriptParser.parse(code);
+      setParseInfo(info);
+    }, 200);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [code]);
 
   return (
     <Container>
@@ -146,6 +162,12 @@ export const App: React.FC<{}> = () => {
         </SettingsPanel>
         <ResultContainer>
           <CodeResult loading={state.loading} error={state.error} data={state.result} />
+          Dependencies:
+          <ul>
+            {parseInfo.dependencies.map(dep => (
+              <li key={dep}>{dep}</li>
+            ))}
+          </ul>
         </ResultContainer>
       </ResultPanel>
     </Container>

@@ -12,7 +12,9 @@ export const CodeEditor: React.FC<{
       height="100%"
       language={language}
       theme="vs-dark"
-      onChange={onChange}
+      onChange={val => {
+        onChange(val);
+      }}
       value={value}
       options={{
         selectOnLineNumbers: true,

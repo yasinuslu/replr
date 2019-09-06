@@ -14,6 +14,8 @@
     ]
   },
   "dependencies": {
+    "acorn": "^7.0.0",
+    "acorn-walk": "^7.0.0",
     "axios": "^0.19.0",
     "core-js": "3",
     "monaco-editor": "^0.17.1",
